@@ -1,0 +1,28 @@
+---
+- name: Collect /etc/passwd and save locally
+  hosts: host_servers
+  vars_files:
+    - secret.yml
+  gather_facts: false
+
+  tasks:
+    - name: Ensure the /output_passwds directory exists or create
+      file:
+        path: "{{ playbook_dir }}/output_passwds"
+        state: directory
+      delegate_to: localhost
+      run_once: true
+
+    - name: Get date and time
+      shell: date '+%Y-%m-%d_%H:%M:%S'
+      register: datetime_output
+
+    - name: Get the contents of /etc/passwd
+      shell: cat /etc/passwd     
+      register: passwd_output
+
+    - name: Save output to a local file
+      copy:
+        dest: "{{ playbook_dir }}/output_passwds/{{ hostvars[inventory_hostname].ansible_host }}_{{ datetime_output.stdout }}_etc_passwd.txt"
+        content: "{{ passwd_output.stdout }}"
+      delegate_to: localhost

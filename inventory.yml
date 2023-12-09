@@ -1,0 +1,14 @@
+all:
+  children:
+    host_servers:
+      vars:
+        ansible_user: root
+        ansible_ssh_pass: "{{ default_ssh_pass }}"
+      hosts:
+        server1:
+          ansible_host: 192.168.56.140
+        server2:
+          ansible_host: 192.168.56.145
+          ansible_ssh_pass: "{{ default_ssh_pass2 }}"
+        server3:
+          ansible_host: 192.168.56.150
